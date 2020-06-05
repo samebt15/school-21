@@ -1,0 +1,62 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: hstark <marvin@42.fr>                      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2020/01/29 11:39:26 by hstark            #+#    #+#              #
+#    Updated: 2020/01/29 11:39:54 by hstark           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME = fdf
+
+CFLAGS =  -Wall -Wextra -Werror
+
+LIB_MLX =  -lmlx -framework OpenGL -framework Appkit
+
+LIB_PORTAUDIO = -L/Users/hstark/.brew/lib -lportaudio
+
+LIB_PATH = ./libft
+
+LIB = ./libft/libft.a
+
+SRC  = fdf.c\
+		wu_algorithm.c\
+		validation.c\
+		drawmatrix.c\
+		key_hooks.c\
+		mouse_hooks.c\
+		gradient.c\
+		equalizer.c
+
+INCLUDES = -I ./includes -I ./libft/includes -I/Users/hstark/.brew/include
+
+OBJ_DIR = ./objs
+
+OBJ = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
+
+SRC_DIR = ./srcs
+
+all: $(OBJ_DIR) $(NAME)
+
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/%.o:$(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+
+$(NAME): $(OBJ)
+			@make -C $(LIB_PATH)
+			@gcc  -g $(CFLAGS) $(OBJ) $(LIB) -o $(NAME) $(INCLUDES) $(LIB_MLX) $(LIB_PORTAUDIO)
+
+clean:
+			@make clean -C $(LIB_PATH)
+			@rm -f $(OBJ)
+
+fclean: clean
+			@make fclean -C $(LIB_PATH)
+			@rm -f $(NAME)
+
+re: fclean all
